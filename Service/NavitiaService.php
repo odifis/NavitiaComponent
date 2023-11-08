@@ -282,12 +282,11 @@ class NavitiaService implements NavitiaServiceInterface, LoggerAwareInterface
         return $this->logger;
     }
 
-    public function setLogger(LoggerInterface $logger): self
+    public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
         if ($this->hasCache()) {
             $this->cache->setLogger($this->logger);
         }
-        return $this;
     }
 }
