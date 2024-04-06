@@ -162,7 +162,7 @@ class NavitiaService implements NavitiaServiceInterface, LoggerAwareInterface
             $request->getApiName(),
             array_merge($request->getParams(), array('token' => $token))
         );
-        $this->setCacheProperties($request->getRegion(), $baseUrl, $token);
+        $this->setCacheProperties('global', $baseUrl, $token);
         $curlResponse = $this->getApiResponse($url, $token, $enableCache);
 
         $response = $curlResponse['response'];
