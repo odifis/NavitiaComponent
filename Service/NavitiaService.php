@@ -137,12 +137,14 @@ class NavitiaService implements NavitiaServiceInterface, LoggerAwareInterface
     private function setCacheProperties(
         string $coverage,
         string $urlApi,
-        string $token
+        string $token,
+        ?string $cacheTtl = null
     ): void {
         if ($this->hasCache()) {
             $this->cache->setCoverage($coverage);
             $this->cache->setUrlApi($urlApi);
             $this->cache->setToken($token);
+            $this->cache->setCacheTtl($cacheTtl);
         }
     }
 
@@ -157,12 +159,13 @@ class NavitiaService implements NavitiaServiceInterface, LoggerAwareInterface
         $baseUrl = $this->config->getUrl().'/'.$this->config->getVersion().'/';
         $url = $request->buildUrl($baseUrl);
         $token = $this->config->getToken();
+        $cacheTtl = $this->config->getCacheTtl();
         $this->log(
             $url,
             $request->getApiName(),
             array_merge($request->getParams(), array('token' => $token))
         );
-        $this->setCacheProperties($request->getRegion(), $baseUrl, $token);
+        $this->setCacheProperties($request->getRegion(), $baseUrl, $token, $cacheTtl);
         $curlResponse = $this->getApiResponse($url, $token, $enableCache);
 
         $response = $curlResponse['response'];
@@ -186,9 +189,14 @@ class NavitiaService implements NavitiaServiceInterface, LoggerAwareInterface
             try {
                 return $this->cache->getCachedItem($cacheKey);
             } catch (CacheItemNotFoundException $e) {
+
                 $ch = new CurlService($url, $this->timeout, $token, $this->logger);
                 $result = $ch->process();
-                $this->cache->setCacheItem($cacheKey, $result);
+                $curlErrorCode = $result['curlError'][0];
+
+                if ($result['httpCode'] === 200 && $curlErrorCode === 'NO_CURL_ERROR') {
+                    $this->cache->setCacheItem($cacheKey, $result);
+                }
             }
         } else {
             $ch = new CurlService($url, $this->timeout, $token, $this->logger);

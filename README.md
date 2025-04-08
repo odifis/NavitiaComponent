@@ -1,6 +1,6 @@
 # Navitia Component
 
-Navitia Component is a PHP library to query __Navitia 2__ Api (http://api.navitia.io),
+Navitia Component is a PHP library to query __Navitia__ Api (https://api.navitia.io),
 and controls query parameters.
 
 
@@ -10,21 +10,30 @@ and controls query parameters.
 - a Navitia token
 
 > Note:
-> If you don't have a Navitia token yet, you have to register here: http://navitia.io/register
+> If you don't have a Navitia token yet, you have to register here: https://navitia.io/register
 
 ## Choose your version
 
-Presently this component exists in 2 major versions :
+- NavitiaComponent v1.x.x used by legacy projects in production (example NMM Realtime)
 
-- NavitiaComponent 1.x.x used by 'classic' projects in production
+- NavitiaComponent v2.x.x compatible with frameworks like Symfony4
 
-- NavitiaComponent 2.x.x compatible with modern frameworks like Symfony4
+- NavitiaComponent v3.0.0 compatible with modern frameworks like Symfony5.4, with old firm name CanalTP
 
-This documentation is for NavitiaComponent 2.x.x
+- NavitiaComponent v3.1.x compatible with modern frameworks like Symfony5.4, with present firm name Hove
+
+
+
+
 
 ## Installation
 
 Using composer:
+
+    composer require "hove/navitia":"^3.1"
+
+
+example for previous versions (before v3.1.x, deprecated)
 
     composer require "canaltp/navitia":"~2.0"
 
@@ -69,7 +78,7 @@ class Navitia
         // Configuration
         $config = array(
             'url' => 'api.navitia.io',
-            'token' => '3b036afe-0110-4202-b9ed-99718476c2e0', // This token has an access to sandbox data
+            'token' => '3b036afe-4242-abcd-4242-99718476c2e0', // Example of token
         );
         $this->navitiacomponent->setConfiguration($config);
     }
@@ -237,11 +246,6 @@ For this part, you should use docker (need install) and launch it with :
 ```shell
 make all_tests_dev
 ```
-
-
-## Contributing
-
-[View all contributors](https://github.com/CanalTP/NavitiaComponent/graphs/contributors)
 
 ## License
 

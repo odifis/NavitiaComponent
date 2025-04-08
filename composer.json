@@ -1,38 +1,31 @@
 {
-    "name": "canaltp/navitia",
+    "name": "hove/navitia",
     "type": "library",
-    "description": "Navitia Component",
+    "description": "A library to interract with Navitia Api (https://api.navitia.io)",
+    "support": {
+        "issues": "https://github.com/hove-io/NavitiaComponent/issues"
+    },
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Ramatoulaye Ndiaye",
-            "email": "ramatoulaye.ndiaye@canaltp.fr"
-        },
-        {
-            "name": "Johan Rouve",
-            "email": "johan.rouve@canaltp.fr"
-        }
-    ],
-    "contributors": [
-		{ "name": "Jean-Baptiste Crestot", "email": "jean-baptiste.crestot@canaltp.fr" }
-	],
     "require": {
         "php": ">=8.0.2",
         "psr/log": "2.0.*",
         "symfony/validator": "5.4.*",
-        "symfony/cache": "^6.0",
+        "symfony/cache": "5.4.* || ^6.0",
         "doctrine/annotations": "^1.13",
         "doctrine/cache": "^2.1"
     },
-    "autoload": {
-        "psr-4": { "Navitia\\Component\\": "" }
-    },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.0-dev"
+            "dev-master": "v3.1-dev"
         }
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5"
+    },
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "Navitia\\Component\\": ""
+        }
     }
 }

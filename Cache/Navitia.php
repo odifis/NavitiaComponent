@@ -15,6 +15,7 @@ class Navitia extends Cache
     private string $urlApi = '';
     private string $token = '';
     private ?LoggerInterface $logger = null;
+    private ?string $cacheTtl = null;
 
     private function needToCheckPublicationDate(): bool
     {
@@ -56,6 +57,12 @@ class Navitia extends Cache
         return $this;
     }
 
+    public function setCacheTtl(?string $cacheTtl = null): self
+    {
+        $this->cacheTtl = $cacheTtl;
+        return $this;
+    }
+
     public function generateCacheKey(?array $specificArgs): string
     {
         $backtrace = debug_backtrace()[1];
@@ -82,9 +89,10 @@ class Navitia extends Cache
         if ($cacheItem->isHit()) {
             $publicationDateInCache = $cacheItem->get();
         }
+
         $currentPublicationDate = $this->getPublicationDate();
 
-        if ($currentPublicationDate !== $publicationDateInCache) {
+        if ($currentPublicationDate !== null && $currentPublicationDate !== $publicationDateInCache) {
             $cacheItem->set($currentPublicationDate);
             $this->cache->save($cacheItem);
             $this->cache->invalidateTags([$this->getCacheTag()]);
@@ -114,15 +122,31 @@ class Navitia extends Cache
 
         $cacheItem->tag([$this->getCacheTag()]);
         $cacheItem->set($data);
+        if ($this->cacheTtl) {
+            $cacheItem->expiresAfter(intval($this->cacheTtl, 10));
+        }
         $this->cache->save($cacheItem);
     }
 
-    private function getPublicationDate(): string
+    private function getPublicationDate(): ?string
     {
-        $url = $this->urlApi.'coverage/'.$this->coverage.'/'.self::PUBLICATION_DATE_API;
-        $ch = new CurlService($url, 6000, $this->token, $this->logger);
-        $curlResponse = $ch->process();
-        $response = json_decode($curlResponse['response']);
-        return $response->status->publication_date;
+        try {
+            $url = $this->urlApi.'coverage/'.$this->coverage.'/'.self::PUBLICATION_DATE_API;
+            $ch = new CurlService($url, 6000, $this->token, $this->logger);
+            $curlResponse = $ch->process();
+            $response = json_decode($curlResponse['response']);
+
+            return $response->status->publication_date;
+        } catch (\Exception $e) {
+            $this->logger->warning(
+                'Error while getting publication date',
+                [
+                    'api' => $url,
+                    'error' => $e->getMessage()
+                ]
+            );
+
+            return null;
+        }
     }
 }
