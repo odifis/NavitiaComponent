@@ -21,7 +21,7 @@
         "psr/log": "^3.0",
         "symfony/validator": "^6.2.11 || ^7",
         "symfony/cache": "^6.0",
-        "doctrine/annotations": "^1.13",
+        "doctrine/annotations": "^1.13 || ^2.0",
         "doctrine/cache": "^2.1"
     },
     "autoload": {
